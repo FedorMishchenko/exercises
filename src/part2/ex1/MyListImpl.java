@@ -30,7 +30,9 @@ public class MyListImpl implements MyList, ListIterable {
      */
     private Object[] array;
 
-    static { DEFAULT_CAPACITY = 10;}
+    static {
+        DEFAULT_CAPACITY = 10;
+    }
 
     {
         modCount = 0;
@@ -46,10 +48,8 @@ public class MyListImpl implements MyList, ListIterable {
     /**
      * Constructor with parameters.
      *
-     * @param initialCapacity
-     *            - initialCapacity the initial capacity of the list.
-     * @throws IllegalArgumentException
-     *             - {@link IllegalArgumentException}.
+     * @param initialCapacity - initialCapacity the initial capacity of the list.
+     * @throws IllegalArgumentException - {@link IllegalArgumentException}.
      */
     public MyListImpl(final int initialCapacity) {
         if (initialCapacity > 0) {
@@ -66,8 +66,7 @@ public class MyListImpl implements MyList, ListIterable {
     /**
      * Copy constructor.
      *
-     * @param obj
-     *            - object MyListImp
+     * @param obj - object MyListImp
      */
     public MyListImpl(final MyList obj) {
         pointer = obj.size();
@@ -79,10 +78,6 @@ public class MyListImpl implements MyList, ListIterable {
         capacity = DEFAULT_CAPACITY;
     }
 
-
-
-
-
     @Override
     public void add(Object e) {
         if (array == EMPTY_ELEMENT_DATA) {
@@ -93,14 +88,12 @@ public class MyListImpl implements MyList, ListIterable {
         }
         modCount++;
         array[pointer++] = e;
-
     }
 
     @Override
     public Object get(int index) {
         rangeCheck(index);
         return array[index];
-
     }
 
     @Override
@@ -165,15 +158,14 @@ public class MyListImpl implements MyList, ListIterable {
             }
         }
         return true;
-
     }
 
     @Override
     public void remove(int index) {
         rangeCheck(index);
         restructMyList(index);
-
     }
+
     @Override
     public Iterator<Object> iterator() {
         return new IteratorImpl();
@@ -226,6 +218,7 @@ public class MyListImpl implements MyList, ListIterable {
             resize(pointer + (array.length / 4));
         }
     }
+
     private class IteratorImpl implements Iterator<Object> {
 
         /**
@@ -261,8 +254,7 @@ public class MyListImpl implements MyList, ListIterable {
         /**
          * Setter {@link IteratorImpl#expectedModCount}.
          *
-         * @param expectedModCount
-         *            the expectedModCount to set.
+         * @param expectedModCount the expectedModCount to set.
          */
         @SuppressWarnings("unused")
         public final void setExpectedModCount(final int expectedModCount) {
@@ -281,8 +273,7 @@ public class MyListImpl implements MyList, ListIterable {
         /**
          * Setter {@link IteratorImpl#currentIndex}.
          *
-         * @param currentIndex
-         *            the currentIndex to set.
+         * @param currentIndex the currentIndex to set.
          */
         public final void setCurrentIndex(int currentIndex) {
             this.currentIndex = currentIndex;
@@ -300,8 +291,7 @@ public class MyListImpl implements MyList, ListIterable {
         /**
          * Setter {@link IteratorImpl#lastRet}.
          *
-         * @param lastRet
-         *            the lastRet to set.
+         * @param lastRet the lastRet to set.
          */
         public final void setLastRet(final int lastRet) {
             this.lastRet = lastRet;
