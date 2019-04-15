@@ -1,5 +1,6 @@
 package part2.ex1;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -52,7 +53,7 @@ public class MyListImpl implements MyList, ListIterable {
             init(capacity);
         }
         if (pointer >= array.length) {
-            resize(array.length * (7 / 3));
+            resize(array.length + (array.length >> 1));
         }
         array[pointer++] = obj;
     }
@@ -88,7 +89,6 @@ public class MyListImpl implements MyList, ListIterable {
             }
         }
         return false;
-
     }
 
     @Override
@@ -96,7 +96,6 @@ public class MyListImpl implements MyList, ListIterable {
         Object[] temp = new Object[size()];
         System.arraycopy(array, 0, temp, 0, size());
         return temp;
-
     }
 
     @Override
@@ -115,9 +114,9 @@ public class MyListImpl implements MyList, ListIterable {
     }
 
     @Override
-    public boolean containsAll(MyList c) {
-        for (int i = 0; i < c.size(); i++) {
-            if (!contains(c.get(i))) {
+    public boolean containsAll(MyList list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (!contains(list.get(i))) {
                 return false;
             }
         }
@@ -145,7 +144,7 @@ public class MyListImpl implements MyList, ListIterable {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < size(); i++) {
             stringBuilder.append(array[i].toString());
-            if (i < size()) stringBuilder.append(", ");
+            if (i < size() - 1) stringBuilder.append(", ");
         }
         return stringBuilder.insert(0, "[").append("]").toString();
     }
@@ -180,7 +179,7 @@ public class MyListImpl implements MyList, ListIterable {
 
     private class IteratorImpl implements Iterator<Object> {
 
-        private int cursor = 0;
+        int cursor = 0;
         boolean condition = false;
 
         @Override
@@ -199,11 +198,12 @@ public class MyListImpl implements MyList, ListIterable {
 
         @Override
         public void remove() {
+            int index = cursor--;
             if (!condition) {
                 throw new IllegalStateException();
             }
             if (this.hasNext()) {
-                MyListImpl.this.remove(cursor);
+                MyListImpl.this.remove(array[--index]);
             }
             condition = false;
         }
@@ -212,22 +212,31 @@ public class MyListImpl implements MyList, ListIterable {
     private class ListIteratorImpl extends IteratorImpl implements ListIterator {
         @Override
         public boolean hasPrevious() {
-            return false;
+            return cursor != 0;
         }
 
         @Override
         public Object previous() {
-            return null;
+            int index = cursor - 1;
+            if (index < 0){
+                throw new NoSuchElementException();
+            }
+            if(index >= array.length ){
+                throw new ConcurrentModificationException();
+            }
+            cursor = index;
+            return array[index];
         }
 
         @Override
-        public void set(Object e) {
-
+        public void set(Object odj) {
+            remove();
+            MyListImpl.this.add(odj);
         }
 
         @Override
         public void remove() {
-
+            super.remove();
         }
     }
 }
