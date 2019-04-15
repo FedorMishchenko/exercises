@@ -69,21 +69,21 @@ public final class Demo {
             it1.remove();
         }
 
-        System.out.println("Show con1: " + con1);
-
-        ListIterator listIt = con.listIterator();
-        System.out.println("\nShow set: \ncon:" + con);
-        int i = 1;
-        System.out.println("Show ListIterator next:");
-        while (listIt.hasNext()) {
-            System.out.print(listIt.next() + " ");
-            listIt.set(i++);
-        }
-        System.out.println("\ncon1: " + con);
-        System.out.println("Show ListIterator previous:");
-        while (listIt.hasPrevious()) {
-            System.out.print(listIt.previous() + " ");
-        }
+//        System.out.println("Show con1: " + con1);
+//
+//        ListIterator listIt = con.listIterator();
+//        System.out.println("\nShow set: \ncon:" + con);
+//        int i = 1;
+//        System.out.println("Show ListIterator next:");
+//        while (listIt.hasNext()) {
+//            System.out.print(listIt.next() + " ");
+//            listIt.set(i++);
+//        }
+//        System.out.println("\ncon1: " + con);
+//        System.out.println("Show ListIterator previous:");
+//        while (listIt.hasPrevious()) {
+//            System.out.print(listIt.previous() + " ");
+//        }
     }
 
 }

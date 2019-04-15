@@ -1,56 +1,29 @@
 package part2.ex1;
 
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class MyListImpl implements MyList, ListIterable {
-    /**
-     * Shared empty array instance used for empty instances.
-     */
+
     private static final Object[] EMPTY_ELEMENT_DATA = {};
-    /**
-     * Default capacity.
-     */
+
     private static final int DEFAULT_CAPACITY;
-    /**
-     * Current capacity for creation array.
-     */
+
     private final int capacity;
-    /**
-     * Current position to index array.
-     */
+
     private int pointer;
-    /**
-     * Mod count.
-     */
-    private int modCount;
-    /**
-     * {@link Object}.
-     */
+
     private Object[] array;
 
     static {
         DEFAULT_CAPACITY = 10;
     }
 
-    {
-        modCount = 0;
-    }
 
-    /**
-     * Default constructor.
-     */
     public MyListImpl() {
         this(0);
     }
 
-    /**
-     * Constructor with parameters.
-     *
-     * @param initialCapacity - initialCapacity the initial capacity of the list.
-     * @throws IllegalArgumentException - {@link IllegalArgumentException}.
-     */
     public MyListImpl(final int initialCapacity) {
         if (initialCapacity > 0) {
             this.array = new Object[initialCapacity];
@@ -63,15 +36,10 @@ public class MyListImpl implements MyList, ListIterable {
         }
     }
 
-    /**
-     * Copy constructor.
-     *
-     * @param obj - object MyListImp
-     */
-    public MyListImpl(final MyList obj) {
-        pointer = obj.size();
+    public MyListImpl(MyList list) {
+        pointer = list.size();
         if (pointer != 0) {
-            array = obj.toArray();
+            array = list.toArray();
         } else {
             array = EMPTY_ELEMENT_DATA;
         }
@@ -79,15 +47,14 @@ public class MyListImpl implements MyList, ListIterable {
     }
 
     @Override
-    public void add(Object e) {
+    public void add(Object obj) {
         if (array == EMPTY_ELEMENT_DATA) {
             init(capacity);
         }
         if (pointer >= array.length) {
             resize(array.length * (7 / 3));
         }
-        modCount++;
-        array[pointer++] = e;
+        array[pointer++] = obj;
     }
 
     @Override
@@ -98,26 +65,24 @@ public class MyListImpl implements MyList, ListIterable {
 
     @Override
     public void clear() {
-        modCount++;
         array = EMPTY_ELEMENT_DATA;
-        pointer = 0;
         init(capacity);
 
     }
 
     @Override
-    public boolean remove(Object o) {
-        if (o == null) {
+    public boolean remove(Object obj) {
+        if (obj == null) {
             for (int i = 0; i < pointer; i++) {
                 if (array[i] == null) {
-                    restructMyList(i);
+                    rebuild(i);
                     return true;
                 }
             }
         } else {
             for (int i = 0; i < pointer; i++) {
-                if (this.array[i].equals(o)) {
-                    restructMyList(i);
+                if (this.array[i].equals(obj)) {
+                    rebuild(i);
                     return true;
                 }
             }
@@ -140,14 +105,13 @@ public class MyListImpl implements MyList, ListIterable {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(Object obj) {
         for (int i = 0; i < pointer; i++) {
-            if (array[i].equals(o)) {
+            if (array[i].equals(obj)) {
                 return true;
             }
         }
         return false;
-
     }
 
     @Override
@@ -163,7 +127,7 @@ public class MyListImpl implements MyList, ListIterable {
     @Override
     public void remove(int index) {
         rangeCheck(index);
-        restructMyList(index);
+        rebuild(index);
     }
 
     @Override
@@ -178,13 +142,12 @@ public class MyListImpl implements MyList, ListIterable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("{");
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < size(); i++) {
-            builder.append("[" + array[i].toString() + "]");
-            if (i < size()) builder.append(", ");
+            stringBuilder.append(array[i].toString());
+            if (i < size()) stringBuilder.append(", ");
         }
-        builder.append("}");
-        return builder.toString();
+        return stringBuilder.insert(0, "[").append("]").toString();
     }
 
     private void init(final int size) {
@@ -201,12 +164,11 @@ public class MyListImpl implements MyList, ListIterable {
     private void rangeCheck(final int index) {
         if (index >= pointer) {
             throw new IndexOutOfBoundsException(
-                    "going beyond the array: size == >" + size() + " index " + "==>" + index);
+                    "size = " + size() + ", index = " + index);
         }
     }
 
-    private void restructMyList(final int index) {
-        modCount++;
+    private void rebuild(final int index) {
         if (index == size() - 1) {
             array[index] = null;
         } else {
@@ -214,163 +176,58 @@ public class MyListImpl implements MyList, ListIterable {
             System.arraycopy(array, index + 1, array, index, lengthCopy);
         }
         pointer--;
-        if (pointer == (array.length / 4)) {
-            resize(pointer + (array.length / 4));
-        }
     }
 
     private class IteratorImpl implements Iterator<Object> {
 
-        /**
-         * Expected modifications count.
-         */
-        private int expectedModCount;
-        /**
-         * Current index iterator.
-         */
-        private int currentIndex;
-
-        /**
-         * Index last return item.
-         */
-        private int lastRet;
-
-        {
-            expectedModCount = MyListImpl.this.modCount;
-            currentIndex = 0;
-            lastRet = -1;
-        }
-
-        /**
-         * Getter {@link IteratorImpl#expectedModCount}.
-         *
-         * @return the expectedModCount.
-         */
-        @SuppressWarnings("unused")
-        public final int getExpectedModCount() {
-            return expectedModCount;
-        }
-
-        /**
-         * Setter {@link IteratorImpl#expectedModCount}.
-         *
-         * @param expectedModCount the expectedModCount to set.
-         */
-        @SuppressWarnings("unused")
-        public final void setExpectedModCount(final int expectedModCount) {
-            this.expectedModCount = expectedModCount;
-        }
-
-        /**
-         * Getter {@link IteratorImpl#currentIndex}.
-         *
-         * @return the currentIndex.
-         */
-        public final int getCurrentIndex() {
-            return currentIndex;
-        }
-
-        /**
-         * Setter {@link IteratorImpl#currentIndex}.
-         *
-         * @param currentIndex the currentIndex to set.
-         */
-        public final void setCurrentIndex(int currentIndex) {
-            this.currentIndex = currentIndex;
-        }
-
-        /**
-         * Getter {@link IteratorImpl#lastRet}.
-         *
-         * @return the lastRet.
-         */
-        public final int getLastRet() {
-            return lastRet;
-        }
-
-        /**
-         * Setter {@link IteratorImpl#lastRet}.
-         *
-         * @param lastRet the lastRet to set.
-         */
-        public final void setLastRet(final int lastRet) {
-            this.lastRet = lastRet;
-        }
+        private int cursor = 0;
+        boolean condition = false;
 
         @Override
         public boolean hasNext() {
-            return currentIndex != size();
+            return cursor != size() && array[cursor] != null;
         }
 
         @Override
         public Object next() {
-            if (currentIndex >= size()) {
-                throw new NoSuchElementException("Error No Such Element from next");
+            if (cursor >= size()) {
+                throw new NoSuchElementException();
             }
-            checkForComodification();
-            lastRet = currentIndex;
-            currentIndex++;
-            return get(lastRet);
+            condition = true;
+            return array[cursor++];
         }
 
         @Override
         public void remove() {
-            if (lastRet < 0) {
-                throw new IllegalStateException("remove: Not does not indicate which item");
+            if (!condition) {
+                throw new IllegalStateException();
             }
-            checkForComodification();
-            MyListImpl.this.remove(lastRet);
-            if (lastRet < currentIndex) {
-                currentIndex--;
+            if (this.hasNext()) {
+                MyListImpl.this.remove(cursor);
             }
-            expectedModCount = modCount;
-            lastRet = -1;
-        }
-
-        /**
-         * Check modifications object state.
-         */
-        final void checkForComodification() {
-            if (modCount != expectedModCount) {
-                throw new ConcurrentModificationException();
-            }
+            condition = false;
         }
     }
 
-    /**
-     * Extends class IteratorImpl and implements ListIterator.
-     *
-     * @author vydrya_vitaliy.
-     * @version 1.0.
-     */
     private class ListIteratorImpl extends IteratorImpl implements ListIterator {
-
         @Override
         public boolean hasPrevious() {
-            return getCurrentIndex() != 0;
+            return false;
         }
-
 
         @Override
         public Object previous() {
-            if (getCurrentIndex() < 0) {
-                throw new NoSuchElementException("Error No Such Element from previous");
-            }
-            checkForComodification();
-            int index = getCurrentIndex() - 1;
-            setCurrentIndex(index);
-            setLastRet(index);
-            return get(index);
+            return null;
         }
 
         @Override
-        public void set(final Object e) {
-            if (getLastRet() < 0) {
-                throw new IllegalStateException("set: Not does not indicate which item");
-            }
-            checkForComodification();
-            array[getLastRet()] = e;
-            setLastRet(-1);
+        public void set(Object e) {
+
+        }
+
+        @Override
+        public void remove() {
+
         }
     }
 }
