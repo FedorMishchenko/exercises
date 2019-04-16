@@ -21,11 +21,11 @@ public class MyListImpl implements MyList, ListIterable {
     }
 
 
-    public MyListImpl() {
+    MyListImpl() {
         this(0);
     }
 
-    public MyListImpl(final int initialCapacity) {
+    private MyListImpl(final int initialCapacity) {
         if (initialCapacity > 0) {
             this.array = new Object[initialCapacity];
             capacity = initialCapacity;
@@ -37,7 +37,7 @@ public class MyListImpl implements MyList, ListIterable {
         }
     }
 
-    public MyListImpl(MyList list) {
+    MyListImpl(MyList list) {
         pointer = list.size();
         if (pointer != 0) {
             array = list.toArray();
@@ -181,6 +181,7 @@ public class MyListImpl implements MyList, ListIterable {
 
         int cursor = 0;
         boolean condition = false;
+        boolean con = false;
 
         @Override
         public boolean hasNext() {
@@ -199,7 +200,7 @@ public class MyListImpl implements MyList, ListIterable {
         @Override
         public void remove() {
             int index = cursor--;
-            if (!condition) {
+            if (!condition && !con) {
                 throw new IllegalStateException();
             }
             if (this.hasNext()) {
@@ -210,6 +211,7 @@ public class MyListImpl implements MyList, ListIterable {
     }
 
     private class ListIteratorImpl extends IteratorImpl implements ListIterator {
+
         @Override
         public boolean hasPrevious() {
             return cursor != 0;
@@ -218,25 +220,47 @@ public class MyListImpl implements MyList, ListIterable {
         @Override
         public Object previous() {
             int index = cursor - 1;
-            if (index < 0){
+            if (index < 0) {
                 throw new NoSuchElementException();
             }
-            if(index >= array.length ){
+            if (index >= array.length) {
                 throw new ConcurrentModificationException();
             }
             cursor = index;
+            con = true;
             return array[index];
         }
 
         @Override
-        public void set(Object odj) {
-            remove();
-            MyListImpl.this.add(odj);
+        public void set(Object obj) {
+            if (!condition && !con) {
+                throw new IllegalStateException();
+            }
+            if (condition) {
+                int index = cursor - 1;
+                array[index] = obj;
+                condition = false;
+            }
+            if (con) {
+                array[cursor] = obj;
+                con = false;
+            }
         }
 
         @Override
-        public void remove() {
-            super.remove();
+        public void remove() {   //todo: realize correct reverse delete
+            if (!condition && !con) {
+                throw new IllegalStateException();
+            }
+            if (condition) {
+                super.remove();
+                condition = false;
+            }
+            if (con) {
+                ++cursor;
+                super.remove();
+                con = false;
+            }
         }
     }
 }

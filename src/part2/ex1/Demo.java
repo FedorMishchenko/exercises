@@ -1,5 +1,6 @@
 package part2.ex1;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -93,10 +94,65 @@ public final class Demo {
         System.out.println(lit.hasPrevious());
 
         list.add("Element");
+        list.add(5);
+        list.add(6);
+        list.add(7);
+        list.add(8);
         System.out.println(lit.next());
         System.out.println(lit.hasNext());
         System.out.println(lit.hasPrevious());
 
+        int i = 1;
+//        lit = ((ListIterable)list).listIterator();
+//        while (lit.hasNext()) {
+//            System.out.println(lit.next());
+//            lit.set(i++);
+//        }
+//        System.out.println(list.toString());
+//
+//
+//        while (lit.hasPrevious()) {
+//            System.out.println(lit.previous());
+//            lit.remove();
+//        }
+//        System.out.println(list.toString());
+
+//----------------------------------------------------------
+
+//        lit = ((ListIterable)list).listIterator();
+//        while (lit.hasNext()) {
+//            System.out.println(lit.next());
+//            lit.set(i++);
+//        }
+//        System.out.println(list.toString());
+//
+//        lit = ((ListIterable)list).listIterator();
+//        while (lit.hasNext()) {
+//            System.out.println(lit.next());
+//            lit.remove();
+//        }
+//        System.out.println(list.toString());
+//        while ((lit.hasPrevious())) lit.previous();
+//----------------------------------------------------------
+
+        i = 10;
+        lit = ((ListIterable)list).listIterator();
+        while (lit.hasNext()) {
+            lit.next();
+            lit.set(i++);
+        }
+        System.out.println(list.toString());
+        while (lit.hasPrevious()) {
+            System.out.println(lit.previous());
+            lit.set(30);
+        }
+        System.out.println(list.toString());
+
+        while (lit.hasNext()) {
+            System.out.println(lit.next());
+            lit.remove();
+        }
+        System.out.println(list.toString());
     }
 
 }
