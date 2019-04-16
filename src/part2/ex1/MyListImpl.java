@@ -1,6 +1,5 @@
 package part2.ex1;
 
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -224,7 +223,7 @@ public class MyListImpl implements MyList, ListIterable {
                 throw new NoSuchElementException();
             }
             if (index >= array.length) {
-                throw new ConcurrentModificationException();
+                throw new IndexOutOfBoundsException();
             }
             cursor = index;
             con = true;
@@ -248,7 +247,7 @@ public class MyListImpl implements MyList, ListIterable {
         }
 
         @Override
-        public void remove() {   //todo: realize correct reverse delete
+        public void remove() {
             if (!condition && !con) {
                 throw new IllegalStateException();
             }
