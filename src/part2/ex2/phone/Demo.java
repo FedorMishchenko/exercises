@@ -1,9 +1,5 @@
 package part2.ex2.phone;
 
-import part2.ex2.Builder;
-
-import java.util.StringJoiner;
-
 public class Demo {
     public static void main(String[] args) {
         Address address = Builder.of(Address::new)

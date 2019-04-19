@@ -1,4 +1,4 @@
-package part2.ex2;
+package part2.ex2.phone;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -198,12 +198,12 @@ public class MyListImpl implements MyList, ListIterable {
 
         @Override
         public void remove() {
-            int index = cursor--;
+            int index = --cursor;
             if (!condition && !con) {
                 throw new IllegalStateException();
             }
             if (this.hasNext()) {
-                MyListImpl.this.remove(array[--index]);
+                MyListImpl.this.remove(array[index]);
             }
             condition = false;
         }

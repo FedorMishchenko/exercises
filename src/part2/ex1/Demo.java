@@ -7,7 +7,7 @@ import java.util.Iterator;
 public final class Demo {
 
     private Demo() {
-        throw new UnsupportedOperationException("non instance Demo");
+        throw new UnsupportedOperationException("non instance Demo1");
     }
 
     public static void main(String[] args) {
@@ -103,36 +103,41 @@ public final class Demo {
         System.out.println(lit.hasPrevious());
 
         int i = 1;
-//        lit = ((ListIterable)list).listIterator();
-//        while (lit.hasNext()) {
-//            System.out.println(lit.next());
-//            lit.set(i++);
-//        }
-//        System.out.println(list.toString());
-//
-//
-//        while (lit.hasPrevious()) {
-//            System.out.println(lit.previous());
-//            lit.remove();
-//        }
-//        System.out.println(list.toString());
+        lit = ((ListIterable)list).listIterator();
+        while (lit.hasNext()) {
+            System.out.println(lit.next());
+            lit.set(i++);
+        }
+        System.out.println(list.toString());
+
+
+        while (lit.hasPrevious()) {
+            System.out.println("removed: " + lit.previous());
+            lit.remove();
+        }
+        System.out.println(list.toString());
+        list.add(5);
+        list.add(6);
+        list.add(7);
+        list.add(8);
 
 //----------------------------------------------------------
 
-//        lit = ((ListIterable)list).listIterator();
-//        while (lit.hasNext()) {
-//            System.out.println(lit.next());
-//            lit.set(i++);
-//        }
-//        System.out.println(list.toString());
-//
-//        lit = ((ListIterable)list).listIterator();
-//        while (lit.hasNext()) {
-//            System.out.println(lit.next());
-//            lit.remove();
-//        }
-//        System.out.println(list.toString());
-//        while ((lit.hasPrevious())) lit.previous();
+        lit = list.listIterator();
+        while (lit.hasNext() && list.size() < 10) {
+            System.out.println(lit.next());
+            list.add(i++);
+        }
+        System.out.println("row 131: " + list.toString());
+
+        lit = list.listIterator();
+        while (lit.hasPrevious()) {
+            System.out.println("row 135 : " + lit.previous());
+            lit.remove();
+        }
+        System.out.println(list.toString());
+        while (lit.hasPrevious()) lit.previous();
+        while (lit.hasNext()) System.out.println("row 140: " + lit.next());
 //----------------------------------------------------------
 
         i = 10;
@@ -141,18 +146,17 @@ public final class Demo {
             lit.next();
             lit.set(i++);
         }
-        System.out.println(list.toString());
+        System.out.println("row 149: " + list.toString());
         while (lit.hasPrevious()) {
-            System.out.println(lit.previous());
+            System.out.println("row 151: " + lit.previous());
             lit.set(30);
         }
-        System.out.println(list.toString());
+        System.out.println("row 154: " + list.toString());
 
         while (lit.hasNext()) {
             System.out.println(lit.next());
             lit.remove();
-        }
-        System.out.println(list.toString());
+        }System.out.println("row 159: " + list.toString());
     }
 
 }
